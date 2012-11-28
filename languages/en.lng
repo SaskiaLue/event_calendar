@@ -1,0 +1,76 @@
+<?PHP
+// general
+$main['calendar']='calendar';
+$main['return_message'] = 'Back to the calendar.';
+$main['submit'] = 'Submit';
+
+// footer.php
+$footer['welcome']='Welcome ';
+$footer['login_error']='Login failed. </br> Wrong username or password.';
+$footer['login_name']= 'name';
+$footer['login_pw']= 'password';
+$footer['keep_login']= 'keep me logged in: ';
+$footer['autologin']= 'autologin';
+$footer['login']= 'login';
+$footer['logout']= 'logout';
+$footer['forgotten_pw']= 'Forgot Password?';
+$footer['monthly_events']='List of monthly events';
+$footer['user_config']='User configuration';
+$footer['event config']='Configuration of repeatable events';
+
+// calendar_main.php
+$calendar['db_message'] = 'No connection to the database.';
+$calendar['1'] = 'January';
+$calendar['2'] = 'February';
+$calendar['3'] = 'March';
+$calendar['4'] = 'April';
+$calendar['5'] = 'May';
+$calendar['6'] = 'June';
+$calendar['7'] = 'July';
+$calendar['8'] = 'August';
+$calendar['9'] = 'September';
+$calendar['10'] = 'October';
+$calendar['11'] = 'November';
+$calendar['12'] = 'December';
+$calendar['name_db']='title_english';
+$calendar['name']='name';
+$calendar['details_db']='details_english';
+$calendar['details']='details';
+$calendar['participants_db']='participants';
+$calendar['participants']='participants';
+$calendar['participate']='participate';
+$calendar['participate_message']='You participate.';
+$calendar['stickybox_message']='Rightklick to sticky box / Klick outside the box to hide it';
+$calendar['edit_event']='edit event';
+$calendar['delete_event']='delete event';
+$calendar['day_0'] = 'Sunday';
+$calendar['day_1'] = 'Monday';
+$calendar['day_2'] = 'Tuesday ';
+$calendar['day_3'] = 'Wednesday';
+$calendar['day_4'] = 'Thursday';
+$calendar['day_5'] = 'Friday';
+$calendar['day_6'] = 'Saturday';
+$calendar['create_event'] = 'Create Event';
+
+// event_day.php
+$day['no_events'] = 'No events are scheduled for this day';
+
+// user_config.php
+$user_config['headline'] = 'User Configuration';
+$user_config['add_user'] = 'Add User';
+$user_config['edit'] = 'edit';
+$user_config['delete'] = 'delete';
+$user_config['mail'] = 'mail';
+
+// edit_user.php
+$edit_user['Headline'] = 'Edit User';
+
+// liste.php
+$month_list['headline'] = 'Events in ';
+$month_list['day'] = 'day';
+$month_list['time'] = 'time';
+
+// event_config.php
+$event_config['wrong_date'] = 'You can only create events in the future!';
+
+?>

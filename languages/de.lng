@@ -1,0 +1,75 @@
+<?PHP
+// general
+$main['calendar']='Kalender';
+$main['return_message'] = 'Zur&uuml;ck zum Kalender.';
+$main['submit'] = 'Absenden';
+
+// footer.php
+$footer['welcome']='Willkommen ';
+$footer['login_error']='Login nicht m&ouml;. </br> Name oder Passwort falsch.';
+$footer['login_name']= 'Name';
+$footer['login_pw']= 'Passwort';
+$footer['keep_login']= 'Autologin: ';
+$footer['autologin']= 'autologin';
+$footer['login']= 'Login';
+$footer['logout']= 'Logout';
+$footer['forgotten_pw']= 'Passwort vergessen?';
+$footer['monthly_events']='Liste der monatlichen Events';
+$footer['user_config']='Nutzer Konfiguration';
+$footer['event config']='Konfiguration der sich wiederholenden Events';
+
+// calendar_main.php
+$calendar['db_message'] = 'Es konnte keine Verbindung zur Datenbank hergestellt werden.';
+$calendar['1'] = "Januar";
+$calendar['2'] = "Februar";
+$calendar['3'] = "M&auml;rz";
+$calendar['4'] = "April";
+$calendar['5'] = "Mai";
+$calendar['6'] = "Juni";
+$calendar['7'] = "Juli";
+$calendar['8'] = "August";
+$calendar['9'] = "September";
+$calendar['10'] = "Oktober";
+$calendar['11'] = "November";
+$calendar['12'] = "Dezember";
+$calendar['name_db']='title';
+$calendar['name']='Name';
+$calendar['details_db']='details';
+$calendar['details']='Details';
+$calendar['participants_db']='participants';
+$calendar['participants']='Teilnehmer';
+$calendar['participate']='teilnehmen';
+$calendar['participate_message']='Sie nehmen teil.';
+$calendar['stickybox_message']='Rechtsklick zum festsetzen der Box / Au&szlig;erhalb der Box klicken zum verstecken';
+$calendar['edit_event']='Event bearbeiten';
+$calendar['delete_event']='Event l&ouml;schen';
+$calendar['day_0'] = 'Sonntag';
+$calendar['day_1'] = 'Montag';
+$calendar['day_2'] = 'Dienstag ';
+$calendar['day_3'] = 'Mittwoch';
+$calendar['day_4'] = 'Donnerstag';
+$calendar['day_5'] = 'Freitag';
+$calendar['day_6'] = 'Samstag';
+$calendar['create_event'] = 'Event erstellen';
+
+// event_day.php
+$day['no_events'] = 'An diesem Tag sind keine Events vorgesehen';
+
+// user_config.php
+$user_config['headline'] = 'Nutzer-Verwaltung';
+$user_config['add_user'] = 'Nutzer hinzuf&uuml;gen';
+$user_config['edit'] = 'Bearbeiten';
+$user_config['delete'] = 'L&ouml;schen';
+$user_config['mail'] = 'E-mail';
+
+// edit_user.php
+$edit_user['Headline'] = 'Nutzer bearbeiten';
+
+// liste.php
+$month_list['headline'] = 'Events im ';
+$month_list['day'] = 'Tag';
+$month_list['time'] = 'Zeit';
+
+// event_config.php
+$event_config['wrong_date'] = 'Sie k&ouml;nnen nur Events in der Zukunft erstellen!';
+?>
