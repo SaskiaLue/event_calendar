@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 28. Nov 2012 um 18:44
+-- Erstellungszeit: 28. Nov 2012 um 20:33
 -- Server Version: 5.5.16
 -- PHP-Version: 5.3.8
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `events` (
   `title_english` text COLLATE utf8_unicode_ci NOT NULL,
   `details_english` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=53 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=54 ;
 
 --
 -- Daten für Tabelle `events`
@@ -99,7 +99,8 @@ INSERT INTO `events` (`id`, `event_type_id`, `date`, `title`, `details`, `start`
 (49, 1, '2013-03-14', 'huhu', 'huhu', '11:00:00', '12:00:00', 1, 23, 0, 'hihi', 'hihi'),
 (50, 1, '2013-03-21', 'huhu', 'huhu', '11:00:00', '12:00:00', 1, 23, 0, 'hihi', 'hihi'),
 (51, 1, '2013-03-28', 'huhu', 'huhu', '11:00:00', '12:00:00', 1, 23, 0, 'hihi', 'hihi'),
-(52, 1, '2012-12-06', 'huhu', 'huhu', '12:00:00', '13:00:00', 1, 23, 0, 'hihi', 'hihi');
+(52, 1, '2012-12-06', 'huhu', 'huhu', '12:00:00', '13:00:00', 1, 23, 0, 'hihi', 'hihi'),
+(53, 1, '2012-12-07', 'huhu', 'huhu', '08:00:00', '09:00:00', 1, 0, 0, 'huhu', 'huhu');
 
 -- --------------------------------------------------------
 
@@ -186,7 +187,7 @@ CREATE TABLE IF NOT EXISTS `event_user` (
   `autologin` varchar(35) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mail` (`mail`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
 
 --
 -- Daten für Tabelle `event_user`
@@ -194,6 +195,7 @@ CREATE TABLE IF NOT EXISTS `event_user` (
 
 INSERT INTO `event_user` (`id`, `username`, `pwd`, `mail`, `sid`, `autologin`) VALUES
 (1, 'phpadmin', 'adminpw', 'admin@admin.de', '3b47gfluakbqnbv1ccl784a7n2', NULL),
+(22, 'Bla1', 'pw', 'bl@bla.com', '', NULL),
 (16, 'test', 'test', 'test@test.de', '', NULL);
 
 -- --------------------------------------------------------
@@ -208,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `event_user_rights` (
   `userid` int(11) NOT NULL,
   `user_right` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
 
 --
 -- Daten für Tabelle `event_user_rights`
@@ -217,7 +219,8 @@ CREATE TABLE IF NOT EXISTS `event_user_rights` (
 INSERT INTO `event_user_rights` (`id`, `userid`, `user_right`) VALUES
 (1, 1, 'admin'),
 (4, 1, 'events'),
-(5, 16, 'events');
+(5, 16, 'events'),
+(11, 22, 'events');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

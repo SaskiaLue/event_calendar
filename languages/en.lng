@@ -61,6 +61,7 @@ $user_config['add_user'] = 'Add User';
 $user_config['edit'] = 'edit';
 $user_config['delete'] = 'delete';
 $user_config['mail'] = 'mail';
+$user_config['close'] = 'close';
 
 // edit_user.php
 $edit_user['Headline'] = 'Edit User';

@@ -203,7 +203,6 @@ ul#bottom li a{
 .user_overlay {
     position:fixed!important;
     position:absolute;
-    height:250px;
     width:400px;
     margin:-100px 0px 0px -250px;
     top: 50%;
@@ -215,6 +214,13 @@ ul#bottom li a{
 }
 .user_overlay li{
 	padding: 0 0 5px;
+}
+.error {
+	color: #ff0000;
+}
+.input-error {
+	border: 1px solid #ff0000;
+	background: #F8DBDB;
 }
 
 /* month list */

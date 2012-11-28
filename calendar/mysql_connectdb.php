@@ -192,7 +192,7 @@ function insert_user($values) {
 						'".$values['user_mail']."'
 						);";
 			if (mysql_query($query)) {
-				$query = "SELECT id FROM $db_name.`event_user` WHERE username = '".$values['user_name']."'";
+				$query = "SELECT id FROM `event_user` WHERE username = '".$values['user_name']."'";
 			    $result = mysql_query($query) OR die("<pre>\n".$query."</pre>\n".mysql_error());
 				$row = mysql_fetch_assoc($result);
 				$rights_query = "insert into $db_name.`event_user_rights`

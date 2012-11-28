@@ -4,6 +4,7 @@ include("calendar/mysql_connectdb.php");
 include("header.php");
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+	if ( ( trim($_POST['user_name']) != '' ) AND ( trim($_POST['user_password']) != '' ) AND ( filter_var($_POST['user_mail'] , FILTER_VALIDATE_EMAIL)) ) {
 	// get values
 	$values = array();
 	$values['user_name'] = $_POST['user_name'];
@@ -12,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	
 	// connect to db and enter query
 	insert_user($values);
+	}
 }
 
 // start the session
@@ -49,16 +51,16 @@ include_once($lang);
 </section>
 <div id="overlay">
 	<div class="user_overlay">
-		<form id="user_formular" name="user_formular" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="POST">
+		<form id="user_formular" name="user_formular" action="" method="POST">
 			<ul>
 			<li><b><?php echo $user_config['add_user']?></b></li>
 			<li><label for="user_name" id="em"><?php echo $footer['login_name']; ?>:<strong>*</strong></label></li>
-			<li><input type="text" name="user_name" size="35" maxlength="128" value=""></li>
+			<li><input type="text" name="user_name" size="35" maxlength="128" value=""><span class="error"></span></li>
 			<li><label for="user_password" id="em"><?php echo $footer['login_pw']; ?>:<strong>*</strong></label></li>
-			<li><input type="password" name="user_password" size="35" maxlength="128" value=""/></li>
+			<li><input type="password" name="user_password" size="35" maxlength="128" value=""/><span class="error"></span></li>
 			<li><label for="user_mail" id="em"><?php echo $user_config['mail']; ?>:</label></li>
-			<li><input type="text" id="user_mail" name="user_mail" size="35" maxlength="128" value=""/></li>
-			<li><input type="submit" value="<?php echo $main['submit']; ?>"></li>
+			<li><input type="text" id="user_mail" name="user_mail" size="35" maxlength="128" value=""/><span class="error"></span></li>
+			<li><input type="submit" class="submit" value="<?php echo $main['submit']; ?>"> <a href="#" id="close"><?php echo $user_config['close'] ?></a></li>
 			</ul>
 		</form>
 	</div>

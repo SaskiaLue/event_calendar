@@ -92,7 +92,7 @@ include($lang); ?>
 				<li><input type="password" name="user_password" size="35" maxlength="128" value=<?php echo '"'.$user['pwd'].'"'; ?>/></li>
 				<li><label for="user_mail" id="em"><?php echo $user_config['mail']; ?>:</label></li>
 				<li><input type="text" id="user_mail" name="user_mail" size="35" maxlength="128" value=<?php echo '"'.$user['mail'].'"'; ?>/></li>
-				<li><input type="submit" value="<?php echo $main['submit']; ?>"></li>
+				<li><input type="submit" class="submit" value="<?php echo $main['submit']; ?>"></li>
 			</ul>
 			</form>
 		</div>
