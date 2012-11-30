@@ -7,7 +7,7 @@ session_start();
 if (in_array("admin", $_SESSION['phpcal_rights']) || in_array("events", $_SESSION['phpcal_rights'])) {
 
 	// included files
-	include("mysql_connectdb.php");
+	include_once("event_db.php");
 	
 	// show all errors
 	error_reporting(E_ALL | E_STRICT);

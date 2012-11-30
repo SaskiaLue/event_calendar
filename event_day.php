@@ -11,7 +11,7 @@
 
 		date_default_timezone_set('Europe/Berlin');
 		// included files
-		include("calendar/mysql_connectdb.php");
+		include_once("calendar/event_db.php");
 		// get date
 		$date = $_GET['date'];
 		echo "<h1>".$date."</h1>";

@@ -1,7 +1,10 @@
 <?php
 
 // included files
-include("calendar/mysql_connectdb.php");
+include("calendar/calendar_db.php");
+include("calendar/event_db.php");
+// included files
+// include("calendar/mysql_connectdb.php");
 
 date_default_timezone_set('Europe/Berlin');
 
@@ -14,6 +17,11 @@ session_start();
  */
 error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', 'On');
+
+include("header.php");
+//this function will check user language and return the file name to be included .. 
+$lang = check_lang();
+include($lang); 
 
 //******************************************************************
 //************* set session data and catch posts *******************
@@ -30,12 +38,14 @@ if (isset($_GET['m'])){
 
 //set current page
 $_SESSION['phpcal_page'] = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-	
+	// print_r($_GET);
+	// print_r($_POST);
+	// print_r($_SESSION);
 // see if a participant was added
-if (isset($_POST['date']) && (!isset($_COOKIE[array_search('teilnehmen', $_POST)]))) {
-	$teilnehmen_id=array_search('teilnehmen', $_POST);
-	add_participant($teilnehmen_id);
-	setCookie($teilnehmen_id , "participantCookie".$teilnehmen_id, mktime(0,0,0,date("m",$_POST['date']),date("d",$_POST['date']),date("Y",$_POST['date']))+86400);
+if (isset($_POST['date']) && (!isset($_COOKIE[array_search('participate', $_POST)]))) {
+	$participate_id=array_search('participate', $_POST);
+	add_participant($participate_id);
+	setCookie($participate_id , "participantCookie".$participate_id, mktime(0,0,0,date("m",$_POST['date']),date("d",$_POST['date']),date("Y",$_POST['date']))+86400);
 }
 
 // add the chosen event type to the session
@@ -43,11 +53,6 @@ if (isset($_POST['event_type'])) {
 	$_SESSION['phpcal_event_type']= $_POST['event_type'];
 }
 
-include("header.php");
-
-//this function will check user language and return the file name to be included .. 
-$lang = check_lang();
-include($lang); 
 //******************************************************************
 //**************************** content *****************************
 //******************************************************************
@@ -78,38 +83,36 @@ include($lang);
 					<div style="padding:5px">
 					<?php 
 					$sticky_events = get_events_per_month($_SESSION['phpcal_month'],$_SESSION['phpcal_year']);
-					foreach($sticky_events as $sticky_event) {
-						echo '<div id="sticky'.$sticky_event['id'].'" class="atip" style="max-width:600px">';
-						echo "<ul id='sticky_list'>";
-							echo "<li>".substr($sticky_event['start'],0,5)."-".substr($sticky_event['end'],0,5)."</li>";
-							echo "<li>".$calendar['name'].": ".utf8_encode($sticky_event[$calendar['name_db']])."</li>";
-							echo "<li>".$calendar['details'].": </li><li>".utf8_encode($sticky_event[$calendar['details_db']])."</li>";
-							echo "<li>".$calendar['participants'].": ".$sticky_event[$calendar['participants_db']]."</li>";
-							$today = date("Y-m-d H:i", time());
-							$event_date = $sticky_event['date']." ".substr($sticky_event['start'],0,5);
-							echo "<li>";
-							if (($today < $event_date) && (!isset($_COOKIE[$sticky_event['id']])) ) {
-								echo '<form name="'.$sticky_event['id'].'" action="'.$_SESSION['phpcal_page'].'" method="POST" onsubmit="javascript:location.reload();">';
-								echo '<input type="hidden" name="date" value="'.strtotime($sticky_event['date']).'"/>';
-								echo '<button type="submit" name="'.$sticky_event['id'].'" value="teilnehmen">'.$calendar['participate'].'</button>';
-								echo "</form>";
-							} elseif (isset($_COOKIE[$sticky_event['id']])) {
+					foreach($sticky_events as $sticky_event) {?>
+						<div id="sticky<?=$sticky_event['id']?>" class="atip" style="max-width:600px">
+						<ul id='sticky_list'>
+							<li><?=substr($sticky_event['start'],0,5)?>-<?=substr($sticky_event['end'],0,5)?></li>
+							<li><?=$calendar['name']?>: <?=utf8_encode($sticky_event[$calendar['name_db']])?></li>
+							<li><?=$calendar['details']?>: </li><li><?=utf8_encode($sticky_event[$calendar['details_db']])?></li>
+							<li><?=$calendar['participants']?>: <?=$sticky_event[$calendar['participants_db']]?></li>
+							<?php $today = date("Y-m-d H:i", time());
+							$event_date = $sticky_event['date']?> <?=substr($sticky_event['start'],0,5); ?>
+							<li>
+							<?php if (($today < $event_date) && (!isset($_COOKIE[$sticky_event['id']])) ) { ?>
+								<form name="<?=$sticky_event['id']?>" action="<?=$_SESSION['phpcal_page']?>" method="POST" onsubmit="javascript:location.reload();">
+								<input type="hidden" name="date" value="<?=strtotime($sticky_event['date'])?>"/>
+								<button type="submit" name="<?=$sticky_event['id']?>" value="participate"><?=$calendar['participate']?></button>
+								</form>
+							<?php } elseif (isset($_COOKIE[$sticky_event['id']])) {
 								echo $calendar['participate_message'];
-							}
-							echo "</li>";
-							echo "<li>".$calendar['stickybox_message']."</li>";
-					
-							if ( isset($_SESSION['phpcal_rights']) && in_array('admin', $_SESSION['phpcal_rights']) ) {
-								echo "<li>".'<a href="calendar/event_formular.php?id='.$sticky_event['id'].'" target="_blank">'.$calendar['edit_event'].'</a>';
-								echo " | ";
-								echo '<a href="calendar/delete_event.php?id='.$sticky_event['id'].'">'.$calendar['delete_event'].'</a>';
-								echo "</li>";
-							}
-						echo "</ul>";
-						echo "</div>";
-					}
-					
-					?>
+							} ?>
+							</li>
+							<li><?=$calendar['stickybox_message']?></li>
+							<?php 
+							if ( isset($_SESSION['phpcal_rights']) && in_array('admin', $_SESSION['phpcal_rights']) ) {?>
+								<li><a href="calendar/event_formular.php?id=<?=$sticky_event['id']?>" target="_blank"><?=$calendar['edit_event']?></a>
+								 | 
+								<a href="calendar/delete_event.php?id=<?=$sticky_event['id']?>"><?=$calendar['delete_event']?></a>
+								</li>
+							<?php } ?>
+						</ul>
+						</div>
+					<?php } ?>
 					
 					</div>
 				</div>
@@ -266,17 +269,18 @@ function drawCalendar($month, $year, $month_string) {
 				echo '<a href="event_day.php?date='.$date.SID.'">'.$d."</a></br>";
 				echo SID;
 				/*== make new events and participate in events ==*/
-				$events = get_events($date);
 				if ( $date >= $today && isset($_SESSION['phpcal_rights']) && (in_array('events', $_SESSION['phpcal_rights']) || in_array('admin', $_SESSION['phpcal_rights']))) {
 						/*== new events can only be created on dates in the future ==*/
 						echo ' (<a href="calendar/event_formular.php?date='.$date.'" target="_blank">'.$calendar['create_event'].'</a>)'."</br>";
 				}
-				foreach ($events as $event) {
-					if (!isset($_SESSION['phpcal_event_type']) || ($_SESSION['phpcal_event_type']==$event['event_type_id']) || ($_SESSION['phpcal_event_type']=='0')) {
-						if (isset($_SESSION['phpcal_lang']) && ($_SESSION['phpcal_lang']=="en")) {
-							echo "<div style='background-color:#".get_color($event['event_type_id'])." !important' data-tooltip='sticky".$event['id']."'>".substr($event['start'],0,5)." ".utf8_encode($event['title_english'])."</div>";
-						} else {
-							echo "<div style='background-color:#".get_color($event['event_type_id'])." !important' data-tooltip='sticky".$event['id']."'>".substr($event['start'],0,5)." ".utf8_encode($event['title'])."</div>";
+				if ( $events = get_events($date)) {
+					foreach ($events as $event) {
+						if (!isset($_SESSION['phpcal_event_type']) || ($_SESSION['phpcal_event_type']==$event['event_type_id']) || ($_SESSION['phpcal_event_type']=='0')) {
+							if (isset($_SESSION['phpcal_lang']) && ($_SESSION['phpcal_lang']=="en")) {
+								echo "<div style='background-color:#".get_color($event['event_type_id'])." !important' data-tooltip='sticky".$event['id']."'>".substr($event['start'],0,5)." ".utf8_encode($event['title_english'])."</div>";
+							} else {
+								echo "<div style='background-color:#".get_color($event['event_type_id'])." !important' data-tooltip='sticky".$event['id']."'>".substr($event['start'],0,5)." ".utf8_encode($event['title'])."</div>";
+							}
 						}
 					}
 				}

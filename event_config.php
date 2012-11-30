@@ -1,6 +1,6 @@
 <?php 
 // included files
-include("calendar/mysql_connectdb.php");
+include_once("calendar/event_db.php");
 include("header.php");
 
 // start the session

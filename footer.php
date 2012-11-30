@@ -1,5 +1,6 @@
 	<aside>
 		<?php
+		include_once("calendar/user_db.php");
 		// login box for users
 		autologin();				
 		$login_failed = 0;

@@ -1,5 +1,5 @@
 <?php
-include 'mysql_connectdb.php';
+include_once('event_db.php');
 
 // start the session
 session_start();

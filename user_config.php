@@ -1,6 +1,6 @@
 <?php 
 // included files
-include("calendar/mysql_connectdb.php");
+include_once("calendar/user_db.php");
 include("header.php");
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {

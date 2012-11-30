@@ -1,7 +1,7 @@
 <?php
 
 // included files
-include("mysql_connectdb.php");
+include_once("user_db.php");
 
 // start the session
 session_start();
@@ -83,16 +83,16 @@ include($lang); ?>
 	<div id="content">
 		<h2><?php echo $edit_user['Headline']; ?></h2>
 		<div id="userformular">
-			<form id="user_formular" name="user_formular" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="POST">
+			<form id="user_formular" name="user_formular" action="<?=htmlentities($_SERVER['PHP_SELF']); ?>" method="POST">
 			<ul>
-				<li><input type="hidden" name="user_id" value=<?php echo '"'.$userid.'"'; ?>></li>
-				<li><label for="user_name" id="em"><?php echo $footer['login_name']; ?>:<strong>*</strong></label></li>
-				<li><input type="text" name="user_name" size="35" maxlength="128" value=<?php echo '"'.$user['username'].'"'; ?>></li>
-				<li><label for="user_password" id="em"><?php echo $footer['login_pw']; ?>:<strong>*</strong></label></li>
-				<li><input type="password" name="user_password" size="35" maxlength="128" value=<?php echo '"'.$user['pwd'].'"'; ?>/></li>
-				<li><label for="user_mail" id="em"><?php echo $user_config['mail']; ?>:</label></li>
-				<li><input type="text" id="user_mail" name="user_mail" size="35" maxlength="128" value=<?php echo '"'.$user['mail'].'"'; ?>/></li>
-				<li><input type="submit" class="submit" value="<?php echo $main['submit']; ?>"></li>
+				<li><input type="hidden" name="user_id" value=<?='"'.$userid.'"'; ?>></li>
+				<li><label for="user_name" id="em"><?=$footer['login_name']; ?>:<strong>*</strong></label></li>
+				<li><input type="text" name="user_name" size="35" maxlength="128" value="<?=$user['username']; ?>"></li>
+				<li><label for="user_password" id="em"><?=$footer['login_pw']; ?>:<strong>*</strong></label></li>
+				<li><input type="password" name="user_password" size="35" maxlength="128" value="<?=$user['pwd']; ?>"/></li>
+				<li><label for="user_mail" id="em"><?=$user_config['mail']; ?>:</label></li>
+				<li><input type="text" id="user_mail" name="user_mail" size="35" maxlength="128" value="<?=$user['mail']; ?>"/></li>
+				<li><input type="submit" class="submit" value="<?=$main['submit']; ?>"></li>
 			</ul>
 			</form>
 		</div>
