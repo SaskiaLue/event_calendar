@@ -40,7 +40,7 @@ function get_events($date) {
 
 // get all events for a given month
 function get_events_per_month($month,$year) {
-	$query = "SELECT * FROM `events` WHERE date like '".$year."-%".$month."-%%' AND repeated = '0' ORDER BY start";
+	$query = "SELECT * FROM `events` WHERE date like '".$year."-%".$month."-%%' AND repeated = '0' ORDER BY date, start";
 	return returnQuery($query);
 }
 
@@ -70,149 +70,91 @@ function get_repeat($repeat_id) {
 ****************************************************************************************/
 // try to insert the given event values
 function insert_event($values) {
-	global $host;
-	global $username;
-	global $pass;
-	global $db_name;
-	$conn = mysql_connect($host, $username, $pass);
-	if ($conn) {
-		// save event data
-		if (mysql_select_db($db_name, $conn)) {
-			$query = "insert into `events`
-						(`event_type_id`,
-						`date`,
-						`title`,
-						`details`,
-						`start`,
-						`end`,
-						`participants`,
-						`repeated`,
-						`title_english`,
-						`details_english`)
-					values
-						( '".$values['event_type']."',
-						'".$values['event_date']."',
-						'".$values['event']."',
-						'".$values['event_details']."',
-						'".$values['event_start']."',
-						'".$values['event_end']."',
-						'".$values['event_participants']."',
-						'".$values['event_repeated']."',
-						'".$values['event_eng']."',
-						'".$values['event_details_eng']."'
-						);";
-			if (mysql_query($query)) {
-				echo "Das Event wurde gespeichert";
-			} else die("Error couldn't save events");
-		} else die("Error : Couldn't find database.");
-	} else die("Error : No database connection.");
-	mysql_close($conn);
+	$query = "insert into `events`
+				(`event_type_id`,
+				`date`,
+				`title`,
+				`details`,
+				`start`,
+				`end`,
+				`participants`,
+				`repeated`,
+				`title_english`,
+				`details_english`)
+			values
+				( '".$values['event_type']."',
+				'".$values['event_date']."',
+				'".$values['event']."',
+				'".$values['event_details']."',
+				'".$values['event_start']."',
+				'".$values['event_end']."',
+				'".$values['event_participants']."',
+				'".$values['event_repeated']."',
+				'".$values['event_eng']."',
+				'".$values['event_details_eng']."'
+				);";
+	enterQuery($query);
 	// if it's a repeatable event create all future events
-	if ($values['event_repeated'] != "") {
+	if ($values['event_repeated'] != "0") {
 		$date = $values['event_date'];
 		$month = date("n",time());
 		$year = date("Y",time());
-		if (($month+4)>12) {
-			$month -=  8;
-			$year += 1;
-		} else {
-			$month += 4;
-		}
-		$last_day = date("Y-m-t",  mktime(0, 0, 0, $month, 1, $year));
+		$last_day = date("Y-m-t",  mktime(0, 0, 0, $month+4, 1, $year));
 		while ($date <= $last_day) {
         	// create event array
-        	$save_event=array();
-			$save_event['event_type'] = $values['event_type'];
+        	$save_event=$values;
 			$save_event['event_date'] = $date;  
-			$save_event['event'] = $values['event'];  
-			$save_event['event_details'] = $values['event_details']; 
-			$save_event['event_start'] = $values['event_start']; 
-			$save_event['event_end'] = $values['event_end']; 
-			$save_event['event_participants'] = $values['event_participants'];
 			$save_event['event_repeated'] = 0; 
-			$save_event['event_eng'] = $values['event_eng']; 
-			$save_event['event_details_eng'] = $values['event_details_eng'];
 			insert_event($save_event);
 			
 			// calculate new event date
-			switch ($values['event_repeated']) {
-			    case 1:
-					$date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))  , date("d",strtotime($date))+1, date("Y",strtotime($date))));
-			        break;
-			    case 2:
-			        $date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))  , date("d",strtotime($date))+7, date("Y",strtotime($date))));
-			        break;
-			    case 3:
-			        $date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))+1  , date("d",strtotime($date)), date("Y",strtotime($date))));
-			        break;
-			}
+			$date = getNextDate($date, $values['event_repeated']);
         }
 	}
 }
 
 // update event data
 function edit_event($values) {
-	global $host;
-	global $username;
-	global $pass;
-	global $db_name;
-	$conn = mysql_connect($host, $username, $pass);
-	if ($conn) {
-		if (mysql_select_db($db_name, $conn)) {
-			$event = get_event($values['id']);
-			$new_repeated = ($event['repeated'] == $values['event_repeated'])?0:1;
+	$event = get_event($values['id']);
+	$new_repeated = ($event['repeated'] == $values['event_repeated'])?0:1;
+	$query = "update `events` set
+				`event_type_id`='".$values['event_type']."',
+				`date`='".$values['event_date']."',
+				`title`='".$values['event']."',
+				`details`='".$values['event_details']."',
+				`start`='".$values['event_start']."',
+				`end`='".$values['event_end']."',
+				`participants`='".$values['event_participants']."',
+				`repeated`='".$values['event_repeated']."',
+				`title_english`='".$values['event_eng']."',
+				`details_english`='".$values['event_details_eng']."' where id=".$values['id'].";";
+	enterQuery($query);
+	// if it's a repetable event
+	if ($values['event_repeated'] != 0) {
+		if ($new_repeated == 0) {
+			// update all future events that are connected to it
 			$query = "update `events` set
 						`event_type_id`='".$values['event_type']."',
-						`date`='".$values['event_date']."',
 						`title`='".$values['event']."',
 						`details`='".$values['event_details']."',
 						`start`='".$values['event_start']."',
 						`end`='".$values['event_end']."',
 						`participants`='".$values['event_participants']."',
-						`repeated`='".$values['event_repeated']."',
+						`repeated`='0',
 						`title_english`='".$values['event_eng']."',
-						`details_english`='".$values['event_details_eng']."' where id=".$values['id'].";";
-			if (mysql_query($query)) {
-				echo "Das Event wurde ge&auml;ndert";
-			} else die("Error couldn't save events");
-		} else die("Error : Couldn't find database.");
-	} else die("Error : No database connection.");
-	mysql_close($conn);
-	// if it's a repetable event
-	if ($values['event_repeated'] != "") {
-		if ($new_repeated == 0) {
-			$conn = mysql_connect($host, $username, $pass);
-			if ($conn) {
-				if (mysql_select_db($db_name, $conn)) {
-					// update all future events that are connected to it
-					$query = "update `events` set
-								`event_type_id`='".$values['event_type']."',
-								`title`='".$values['event']."',
-								`details`='".$values['event_details']."',
-								`start`='".$values['event_start']."',
-								`end`='".$values['event_end']."',
-								`participants`='".$values['event_participants']."',
-								`repeated`='',
-								`title_english`='".$values['event_eng']."',
-								`details_english`='".$values['event_details_eng']."' 
-								where 
-								`event_type_id`='".$event['event_type_id']."' AND
-								`title`='".$event['title']."' AND
-								`details`='".$event['details']."' AND
-								`start`='".$event['start']."' AND
-								`end`='".$event['end']."' AND
-								`repeated`='0' AND
-								`participants`='".$event['participants']."' AND
-								`title_english`='".$event['title_english']."' AND
-								`details_english`='".$event['details_english']."' AND
-								`date` > '".date('Y-m-d', strtotime('today'))."';";
-								// `date` > ".date('Y-m-d', strtotime('today')).";";
-					if (mysql_query($query)) {
-						echo "Changed events";
-					} else die("Error couldn't save events");
-				} else die("Error : Couldn't find database.");
-			} else die("Error : No database connection.");
-			mysql_close($conn);
+						`details_english`='".$values['event_details_eng']."' 
+						where 
+						`event_type_id`='".$event['event_type_id']."' AND
+						`title`='".$event['title']."' AND
+						`details`='".$event['details']."' AND
+						`start`='".$event['start']."' AND
+						`end`='".$event['end']."' AND
+						`repeated`='0' AND
+						`participants`='".$event['participants']."' AND
+						`title_english`='".$event['title_english']."' AND
+						`details_english`='".$event['details_english']."' AND
+						`date` >= '".date('Y-m-d', strtotime('today'))."';";
+			enterQuery($query);
 		
 		// if there is a new repeat type
 		} else {
@@ -231,7 +173,6 @@ function edit_event($values) {
 								`title_english`='".$event['title_english']."' AND
 								`details_english`='".$event['details_english']."' AND
 								`date` > '".date('Y-m-d', strtotime('today'))."';";
-							echo $query;
 					if (!mysql_query($query)) die("Error: Can't delete event");
 				} else die("Error : Couldn't find database.");
 			} else die("Error : No database connection.");
@@ -240,13 +181,7 @@ function edit_event($values) {
 			$date = $values['event_date'];
 			$month = date("n",time());
 			$year = date("Y",time());
-			if (($month+4)>12) {
-				$month -=  8;
-				$year += 1;
-			} else {
-				$month += 4;
-			}
-			$last_day = date("Y-m-t",  mktime(0, 0, 0, $month, 1, $year));
+			$last_day = date("Y-m-t",  mktime(0, 0, 0, $month+4, 1, $year));
 			while ($date <= $last_day) {
 				// get the values for the database
 				$save_event=array();
@@ -263,17 +198,7 @@ function edit_event($values) {
 				insert_event($save_event);
 				
 				// calculate new event date
-				switch ($values['event_repeated']) {
-					case 1:
-						$date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))  , date("d",strtotime($date))+1, date("Y",strtotime($date))));
-						break;
-					case 2:
-						$date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))  , date("d",strtotime($date))+7, date("Y",strtotime($date))));
-						break;
-					case 3:
-						$date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))+1  , date("d",strtotime($date)), date("Y",strtotime($date))));
-						break;
-				}
+				$date = getNextDate($date, $values['event_repeated']);
 			}
 		}
 	}
@@ -283,11 +208,12 @@ function edit_event($values) {
 function delete_event($event_id) {
 	$event = get_event($event_id);
 	// delete the specified event
+	print($event['repeated']);
 	$query = "DELETE FROM `events`
 				WHERE id = ".$event_id.";";
 	enterQuery($query);
-	if ($event['repeated'] != '') {
-		$query = "DELETE from `events` where
+	if ($event['repeated'] != '0') {
+		$query = "DELETE from `events` where 
 				`event_type_id`='".$event['event_type_id']."' AND
 				`title`='".$event['title']."' AND
 				`details`='".$event['details']."' AND
@@ -302,20 +228,37 @@ function delete_event($event_id) {
 }
 
 // helper functions
-function getNextDate($date, $repeat_type) {
-	
+function getNextDate($date, $repeat_type, $after = false) {
 	// calculate new event date
 	switch ($repeat_type) {
 		case 1:
-			return date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))  , date("d",strtotime($date))+1, date("Y",strtotime($date))));
+			$return_date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))  , date("d",strtotime($date))+1, date("Y",strtotime($date))));
 			break;
 		case 2:
-			return date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))  , date("d",strtotime($date))+7, date("Y",strtotime($date))));
+			$return_date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))  , date("d",strtotime($date))+7, date("Y",strtotime($date))));
 			break;
 		case 3:
-			return date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))+1  , date("d",strtotime($date)), date("Y",strtotime($date))));
+			$return_date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))+1  , date("d",strtotime($date)), date("Y",strtotime($date))));
 			break;
 	}
+	if ( $after && ($after > $return_date )) {
+		return getNextDate($return_date, $repeat_type, $after);
+	}
+	return $return_date;
+}
+
+function setData ($values, $seperator) {
+	$data =
+		"`event_type_id`='".$values['event_type']."'".$seperator."
+		`title`='".$values['event']."'".$seperator."
+		`details`='".$values['event_details']."'".$seperator."
+		`start`='".$values['event_start']."'".$seperator."
+		`end`='".$values['event_end']."'".$seperator."
+		`participants`='".$values['event_participants']."'".$seperator."
+		`repeated`='0'".$seperator."
+		`title_english`='".$values['event_eng']."'".$seperator."
+		`details_english`='".$values['event_details_eng']."'";
+	return $data;
 }
 
 ?>

@@ -55,7 +55,6 @@ if (in_array("admin", $_SESSION['phpcal_rights']) || in_array("events", $_SESSIO
 	if ($_SERVER['REQUEST_METHOD'] == "POST") {
 		$today = date("Y-m-d H:i", time());
 		$event_date = $_POST['event_date']." ".substr($_POST['event_start'],0,5);
-		echo $type;
 		if (( ( $type == 'insert' ) && ( $event_date > $today ) ) || ( $type == 'edit' ) ) {
 			// get values
 			$values = array();
@@ -79,7 +78,7 @@ if (in_array("admin", $_SESSION['phpcal_rights']) || in_array("events", $_SESSIO
 			}
 			print '<script>window.close();</script>';
 		} else {
-			echo $event_config['wrong_date'];
+			print($event_config['wrong_date']);
 		}
 
 		exit();
@@ -110,7 +109,7 @@ if (in_array("admin", $_SESSION['phpcal_rights']) || in_array("events", $_SESSIO
 		<header>
 			<div id="logo">
 				<h1>
-					<?php echo $main['calendar'] ?>
+					<?=$main['calendar'] ?>
 				</h1>
 				<h3 class="slogan">
 					
@@ -120,20 +119,20 @@ if (in_array("admin", $_SESSION['phpcal_rights']) || in_array("events", $_SESSIO
 		<div id="content">
 
 		<div id="eventformular">
-			<form id="event_formular" name="event_formular" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="POST">
+			<form id="event_formular" name="event_formular" action="<?=htmlentities($_SERVER['PHP_SELF']); ?>" method="POST">
 			<table>
-				<tr><td><input type="hidden" id="event_date" name="event_date" value="<?php echo (isset($event))?($event['date']):($_GET['date']);?>" size="12" /></td></tr>
-				<?php if (isset($event)) { ?><tr><td></td><td><input type="hidden" name="event_id" value=<?php echo '"'.$eventid.'"'; ?>></td></tr> <?php } ?>
-				<tr><td><label for="event_type" id="em">Type :<strong>*</strong></label></td><td><select id="event_type" name="event_type" size="1"><?php echo get_english_types((isset($event))?($event['event_type_id']):(0));?></select></td><td><span class="error"></span></td></tr>
-				<tr><td><label for="event" id="em">Name :<strong>*</strong></label></td><td><input type="text" id="event" name="event" value="<?php echo (isset($event))?($event['title']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
-				<tr><td><label for="event_details" id="em">Details :<strong>*</strong></label></td><td><input type="text" id="event_details" name="event_details" value="<?php echo (isset($event))?($event['details']):(''); ?>" size="35" maxlength="500" /></td><td><span class="error"></span></td></tr>
-				<tr><td><label for="event_eng" id="em">Name (english):<strong>*</strong></label></td><td><input type="text" id="event_eng" name="event_eng" value="<?php echo (isset($event))?($event['title_english']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
-				<tr><td><label for="event_details_eng" id="em">Details (english) :<strong>*</strong></label></td><td><input type="text" id="event_details_eng" name="event_details_eng" value="<?php echo (isset($event))?($event['details_english']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
-				<tr><td><label for="event_start" id="em">Start (hh:mm):<strong>*</strong></label></td><td><input type="text" id="event_start" name="event_start" value="<?php echo (isset($event))?($event['start']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
-				<tr><td><label for="event_end" id="em">End (hh:mm):</label></td><td><input type="text" id="event_end" name="event_end" value="<?php echo (isset($event))?($event['end']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
-				<tr><td><label for="event_repeated" id="em">Repeats:</label></td><td><select id="event_repeated" name="event_repeated" size="1"><option></option><?php echo get_repeat((isset($event))?($event['repeated']):(0));?></select></td><td><span class="error"></span></td></tr>
-				<tr><td><label for="event_participants" id="em">Participants:<strong>*</strong></label></td><td><input type="text" id="event_participants" name="event_participants" value="<?php echo (isset($event))?($event['participants']):(''); ?>" size="35" maxlength="128" value="0" /></td></tr>
-				<tr><td><input type="submit" class="submit" value="<?php echo $main['submit']; ?>"></td></tr>
+				<tr><td><input type="hidden" id="event_date" name="event_date" value="<?=(isset($event))?($event['date']):($_GET['date']);?>" size="12" /></td></tr>
+				<?php if (isset($event)) { ?><tr><td></td><td><input type="hidden" name="event_id" value=<?='"'.$eventid.'"'; ?>></td></tr> <?php } ?>
+				<tr><td><label for="event_type" id="em">Type :<strong>*</strong></label></td><td><select id="event_type" name="event_type" size="1"><?=get_english_types((isset($event))?($event['event_type_id']):(0));?></select></td><td><span class="error"></span></td></tr>
+				<tr><td><label for="event" id="em">Name :<strong>*</strong></label></td><td><input type="text" id="event" name="event" value="<?=(isset($event))?($event['title']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
+				<tr><td><label for="event_details" id="em">Details :<strong>*</strong></label></td><td><input type="text" id="event_details" name="event_details" value="<?=(isset($event))?($event['details']):(''); ?>" size="35" maxlength="500" /></td><td><span class="error"></span></td></tr>
+				<tr><td><label for="event_eng" id="em">Name (english):<strong>*</strong></label></td><td><input type="text" id="event_eng" name="event_eng" value="<?=(isset($event))?($event['title_english']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
+				<tr><td><label for="event_details_eng" id="em">Details (english) :<strong>*</strong></label></td><td><input type="text" id="event_details_eng" name="event_details_eng" value="<?=(isset($event))?($event['details_english']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
+				<tr><td><label for="event_start" id="em">Start (hh:mm):<strong>*</strong></label></td><td><input type="text" id="event_start" name="event_start" value="<?=(isset($event))?($event['start']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
+				<tr><td><label for="event_end" id="em">End (hh:mm):</label></td><td><input type="text" id="event_end" name="event_end" value="<?=(isset($event))?($event['end']):(''); ?>" size="35" maxlength="128" /></td><td><span class="error"></span></td></tr>
+				<tr><td><label for="event_repeated" id="em">Repeats:</label></td><td><select id="event_repeated" name="event_repeated" size="1"><option></option><?=get_repeat((isset($event))?($event['repeated']):(0));?></select></td><td><span class="error"></span></td></tr>
+				<tr><td><label for="event_participants" id="em">Participants:<strong>*</strong></label></td><td><input type="text" id="event_participants" name="event_participants" value="<?=(isset($event))?($event['participants']):(''); ?>" size="35" maxlength="128" value="0" /></td></tr>
+				<tr><td><input type="submit" class="submit" value="<?=$main['submit']; ?>"></td></tr>
 			</table>
 			</form>	
 		</div>

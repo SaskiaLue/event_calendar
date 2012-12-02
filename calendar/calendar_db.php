@@ -13,7 +13,6 @@ include_once('connect_db.php');
 // updating the participants for a chosen event
 function add_participant($event_id) {
 	$query = "UPDATE `events` SET participants = participants+1 WHERE id='".$event_id."'";
-	echo "bla";
 	enterQuery($query);
 }
 
@@ -33,7 +32,7 @@ function create_month($month,$year) {
 		$last_day = date("Y-m-t", mktime(0, 0, 0, $month, 1, $year));
 		foreach ($events as $event) {
 			// get the new date depending on the repeat type
-			$date = getNextDate($event['date'], $event['repeated']);
+			$date = getNextDate($event['date'], $event['repeated'], date("Y-m-01", mktime(0, 0, 0, $month, 1, $year)));
 			while ($date <= $last_day) {
 				$duplicate_query= "select id from `events`
 							where date = '".$date."' and
@@ -45,8 +44,8 @@ function create_month($month,$year) {
 							repeated='0' and
 							title_english='".$event['title_english']."' and
 							details_english='".$event['details_english']."'";
-				if (!($duplicates = returnQuery($duplicate_query))) die("Error while trying to find duplicate values");
-				if(!(count( $duplicates )>0)) {
+				$duplicates = returnQuery($duplicate_query);
+				if (empty($duplicates)){
 					// save new event
 					$query = "insert into `events`
 								(`event_type_id`,
@@ -71,7 +70,7 @@ function create_month($month,$year) {
 								  '".$event['title_english']."',
 								  '".$event['details_english']."'
 							);";
-					if (!enterQuery($query)) die("Error: Couldn't create new month");
+					enterQuery($query);
 				}
 				// get the new date depending on the repeat type
 				$date = getNextDate($date, $event['repeated']);
@@ -82,12 +81,14 @@ function create_month($month,$year) {
 
 // get the date where the last creation/ delete took place
 function get_last_delete() {
-	$query = "SELECT lastdelete FROM `event_delete_month` where id=1";
-	return returnQuery($query);
+	$query = "SELECT lastdelete FROM `event_delete_month` order by id desc limit 1";
+	$last_delete = returnQuery($query);
+	return $last_delete[0]['lastdelete'];
 }
 
 // save the actual date to the database
 function set_last_delete($date) {
+echo "set";
 	$query = "INSERT INTO `event_delete_month` (`lastdelete`) VALUES ('".$date."')
 				ON DUPLICATE KEY UPDATE `lastdelete`='".$date."';";
 	enterQuery($query);

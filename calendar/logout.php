@@ -1,6 +1,6 @@
 <?php
 // included files
-include("mysql_connectdb.php");
+include("user_db.php");
 session_start();
 // logout user
 doLogout($_SESSION['UserID']);

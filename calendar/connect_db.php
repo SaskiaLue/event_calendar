@@ -13,16 +13,22 @@ $username = "root";
 $pass = "";
 $db_name = "db372066379";
 
+$dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
+
 // test the database connection
 function can_connect() {
 	global $host;
 	global $username;
 	global $pass;
 	global $db_name;
-	$conn = mysql_connect($host, $username, $pass);
-	if(!$conn){
-		return FALSE;
-	} else return TRUE;	
+	try {
+	   $dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
+	   return true;
+	   $dbh = null;
+	} catch (PDOException $e) {
+	   print "Error!: " . $e->getMessage() . "<br/>";
+	   die();
+	}
 }
 
 
@@ -32,13 +38,14 @@ function enterQuery($query) {
 	global $username;
 	global $pass;
 	global $db_name;
-	$conn = mysql_connect($host, $username, $pass);
-	if ($conn) {
-		if (mysql_select_db($db_name, $conn)) {
-			if (!$result = mysql_query($query)) die("Error beim updaten der Teilnehmer.");
-			return true;
-		} else die("Error : Couldn't find database.");
-	} else die("Error : No database connection.");
+	try {
+		$dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
+		$dbh->query($query);
+		$dbh = null;
+	} catch (PDOException $e) {
+		print "Error!: " . $e->getMessage() . "<br/>";
+		die();
+	}
 }
 
 // return an array with results
@@ -48,17 +55,17 @@ function returnQuery($query) {
 	global $pass;
 	global $db_name;
 	$value = array();
-	$conn = mysql_connect($host, $username, $pass);
-	if ($conn) {
-		if (mysql_select_db($db_name, $conn)) {
-			if ($result = mysql_query($query)) {
-					while ($row = mysql_fetch_assoc($result)) {
-						$value[] = $row;
-					}
-					return $value;
-			} else die("Error beim auslesen der verf&uuml;gbaren Events.");
-		} else die("Error : Couldn't find database.");
-	} else die("Error : No database connection.");
+	try {
+		$dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
+		foreach ($dbh->query($query) as $row) {
+			$value[] = $row;
+		}
+		$dbh = null;
+		return $value;
+	} catch (PDOException $e) {
+		print "Error!: " . $e->getMessage() . "<br/>";
+		die();
+	}
 }
 
 
@@ -69,17 +76,17 @@ function getDropdownOptions($name, $table, $selected) {
 	global $username;
 	global $pass;
 	global $db_name;
-	$conn = mysql_connect($host, $username, $pass);
-	if ($conn) {
-		if (mysql_select_db($db_name, $conn)) {
-			if ($result = mysql_query("SELECT id, ".$name." FROM ".$table)) {
-				while ($row = mysql_fetch_assoc($result)) {
-					$html .= sprintf("<option value='%s'%s>%s</option>\n", $row["id"], $row["id"] == $selected ? ' selected' : '', $row[$name]);
-				}
-				return $html;
-			} else die("Error");
-		} else die("Error : Couldn't find database.");
-	} else die("Error : No database connection.");
+	try {
+		$dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
+		foreach ($dbh->query("SELECT id, ".$name." FROM ".$table) as $row) {
+			$html .= sprintf("<option value='%s'%s>%s</option>\n", $row["id"], $row["id"] == $selected ? ' selected' : '', $row[$name]);
+		}
+		$dbh = null;
+		return $html;
+	} catch (PDOException $e) {
+		print "Error!: " . $e->getMessage() . "<br/>";
+		die();
+	}
 }
 
 ?>

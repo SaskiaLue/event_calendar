@@ -1,6 +1,6 @@
 <?php
 // included files
-include("mysql_connectdb.php");
+include("user_db.php");
 
 // start the session
 session_start();

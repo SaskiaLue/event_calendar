@@ -39,9 +39,9 @@ $events = get_events_per_month($month,$year);
 	//this function will check user language and return the file name to be included .. 
 	$lang = check_lang();
 	include($lang); ?>
-	<h1><?php echo $month_list['headline'].$calendar[$_SESSION['phpcal_month']]." ".$_SESSION['phpcal_year']; ?>
+	<h1><?=$month_list['headline'].$calendar[$_SESSION['phpcal_month']]." ".$_SESSION['phpcal_year']; ?>
 	<table id='month_table' border='4px'>
-	<tr><th><?php echo $month_list['day']; ?></th><th><?php echo $month_list['time']; ?></th><th><?php echo $calendar['name']; ?></th><th><?php echo $calendar['details']; ?></th><th><?php echo $calendar['participants']; ?></th></tr>
+	<tr><th><?=$month_list['day']; ?></th><th><?=$month_list['time']; ?></th><th><?=$calendar['name']; ?></th><th><?=$calendar['details']; ?></th><th><?=$calendar['participants']; ?></th></tr>
 	<?php
 	foreach ($events as $event) {
 		echo "<tr><td>".$event['date']."</td><td>".substr($event['start'],0,5)."-".substr($event['end'],0,5)."</td><td>".utf8_encode($event[$calendar['name_db']])."</td><td>".utf8_encode($event[$calendar['details_db']])."</td><td>".$event['participants']."</td></tr>";

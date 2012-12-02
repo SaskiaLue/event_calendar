@@ -73,7 +73,7 @@ include($lang); ?>
 	<header>
 		<div id="logo">
 			<h1>
-				<?php echo $main['calendar'] ?>
+				<?=$main['calendar'] ?>
 			</h1>
 			<h3 class="slogan">
 				
@@ -81,7 +81,7 @@ include($lang); ?>
 		</div>
 	</header>
 	<div id="content">
-		<h2><?php echo $edit_user['Headline']; ?></h2>
+		<h2><?=$edit_user['Headline']; ?></h2>
 		<div id="userformular">
 			<form id="user_formular" name="user_formular" action="<?=htmlentities($_SERVER['PHP_SELF']); ?>" method="POST">
 			<ul>

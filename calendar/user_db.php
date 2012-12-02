@@ -25,17 +25,17 @@ function insert_user($values) {
 				'".$values['user_password']."',
 				'".$values['user_mail']."'
 				);";
-	if (enterQuery($query)) {
-		$user_id = mysql_insert_id();
-		$rights_query = "insert into `event_user_rights`
-					(`userid`,
-					`user_right`)
-				values
-					( '".$user_id."',
-					'events'
-					);";
-		if (!enterQuery($rights_query)) die("<pre>\n".$query."</pre>\n".mysql_error());
-	} else die("<pre>\n".$query."</pre>\n".mysql_error());
+		enterQuery($query);
+		if ($user_id = mysql_insert_id()) {
+			$rights_query = "insert into `event_user_rights`
+						(`userid`,
+						`user_right`)
+					values
+						( '".$user_id."',
+						'events'
+						);";
+			enterQuery($rights_query);
+		}
 }
 
 // updating user data
@@ -131,8 +131,8 @@ function login($values) {
 	// validate user data
 	$query = "SELECT id FROM `event_user` WHERE username = '".mysql_real_escape_string(trim($values['username']))."' AND pwd = '".trim($values['password'])."'";
 	// test if theres only one user with this data
-	if (count($query_result = enterQuery($query))==1){
-		doLogin($query_result, $values['autologin']); 
+	if (count($query_result = returnQuery($query))==1){
+		doLogin($query_result[0]['id'], $values['autologin']); 
 		return true;
 	} else {
 		return false;

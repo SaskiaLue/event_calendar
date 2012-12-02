@@ -27,7 +27,7 @@ include($lang);
 //************* set session data and catch posts *******************
 //******************************************************************
 
-// set the current month and year
+// set the displayed month and year
 if (isset($_GET['m'])){
 	$_SESSION['phpcal_month'] = $_GET['m'];
 	$_SESSION['phpcal_year'] = $_GET['y'];
@@ -35,6 +35,10 @@ if (isset($_GET['m'])){
 	if (empty($_SESSION['phpcal_month'])) { $_SESSION['phpcal_month'] =  date("n",time()); };
 	if (empty($_SESSION['phpcal_year'])) { $_SESSION['phpcal_year']  =  date("Y",time()); };
 }
+
+// set the current month and year
+$m = (empty($m)) ? date("n",time()) : "$m";
+$y = (empty($y)) ? date("Y",time()) : "$y";
 
 //set current page
 $_SESSION['phpcal_page'] = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -61,10 +65,12 @@ if (isset($_POST['event_type'])) {
 		<?php
 		if (can_connect()) {
 			// on the first day of the month delete the old month and create the new one
-			if ((date("d") == '26') && (date("Y-m-d") != get_last_delete())) {
+			echo get_last_delete().' < '.date("Y-m-01");
+			echo (get_last_delete() < date("Y-m-01"))?('ja'):('nein');
+			if (get_last_delete() < date("Y-m-01")) {
 				delete_month(date("Y-m-d", mktime(0, 0, 0, (date('m')-1), 0, date('Y'))));
-				$newMonth = (($_SESSION['phpcal_month']+4)>12) ? $_SESSION['phpcal_month']-8 : $_SESSION['phpcal_month']+4;
-				$newYear = (($_SESSION['phpcal_month']+4)>12) ? $_SESSION['phpcal_year']+1 : $_SESSION['phpcal_year'];
+				$newMonth = (($m+4)>12) ? $m-8 : $m+4;
+				$newYear = (($m+4)>12) ? $y+1 : $y;
 				create_month($newMonth,$newYear);
 				// save the date so events won't be added twice
 				set_last_delete(date("Y-m-d"));
@@ -164,10 +170,9 @@ function drawCalendar($month, $year, $month_string) {
 	
     /*== get what weekday the first is on ==*/
     $tmpd = getdate(mktime(0,0,0,$month+1-1,1,$year+1-1));
-    $month = $tmpd["month"]; 
     $firstwday= $tmpd["wday"];
 
-    $lastday = date("t", mktime(0, 0, 0, $month+1-1, 0, $year));
+    $lastday = date("t", mktime(0, 0, 0, $_SESSION['phpcal_month']+1, 0, $_SESSION['phpcal_year']));
 
 ?>
 <div id="calendar">
@@ -245,7 +250,7 @@ function drawCalendar($month, $year, $month_string) {
 
 				/*== set up blank days for first week ==*/
 				if ($firstweek) {
-					$lastday_lastmonth = date("t",mktime(0, 0, 0, (date('m')), 0, date('Y')));
+					$lastday_lastmonth = date("t",mktime(0, 0, 0, ($_SESSION['phpcal_month']), 0, $_SESSION['phpcal_year']));
 					echo "<tr height='80' valign='top'>";
 					for ($i=$firstwday-1; $i>=0; $i--) {
 						echo "<td class='other_month'>".($lastday_lastmonth - $i)."</td>";
