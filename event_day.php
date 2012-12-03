@@ -4,14 +4,10 @@
 		
 		// start the session
 		session_start();
-		
-		//this function will check user language and return the file name to be included .. 
-		$lang = check_lang();
-		include($lang); 
 
 		date_default_timezone_set('Europe/Berlin');
 		// included files
-		include_once("calendar/event_db.php");
+		include_once("modules/event_db.php");
 		// get date
 		$date = $_GET['date'];
 		echo "<h1>".$date."</h1>";
@@ -47,7 +43,7 @@
 		}
 		?>
 		<p>
-		<a href=<?php echo $_SESSION['phpcal_page']; ?>><?php echo $main['return_message']; ?></a>
+		<a href=<?=$_SESSION['phpcal_page']; ?>><?=$main['return_message']; ?></a>
 		</p>
 	</section>
 <?php include("footer.php"); ?>

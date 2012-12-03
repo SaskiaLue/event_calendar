@@ -1,10 +1,8 @@
 <?php
 
 // included files
-include("calendar/calendar_db.php");
-include("calendar/event_db.php");
-// included files
-// include("calendar/mysql_connectdb.php");
+include("modules/calendar_db.php");
+include("modules/event_db.php");
 
 date_default_timezone_set('Europe/Berlin');
 
@@ -19,9 +17,6 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', 'On');
 
 include("header.php");
-//this function will check user language and return the file name to be included .. 
-$lang = check_lang();
-include($lang); 
 
 //******************************************************************
 //************* set session data and catch posts *******************
@@ -65,8 +60,6 @@ if (isset($_POST['event_type'])) {
 		<?php
 		if (can_connect()) {
 			// on the first day of the month delete the old month and create the new one
-			echo get_last_delete().' < '.date("Y-m-01");
-			echo (get_last_delete() < date("Y-m-01"))?('ja'):('nein');
 			if (get_last_delete() < date("Y-m-01")) {
 				delete_month(date("Y-m-d", mktime(0, 0, 0, (date('m')-1), 0, date('Y'))));
 				$newMonth = (($m+4)>12) ? $m-8 : $m+4;
@@ -92,30 +85,29 @@ if (isset($_POST['event_type'])) {
 					foreach($sticky_events as $sticky_event) {?>
 						<div id="sticky<?=$sticky_event['id']?>" class="atip" style="max-width:600px">
 						<ul id='sticky_list'>
-							<li><?=substr($sticky_event['start'],0,5)?>-<?=substr($sticky_event['end'],0,5)?></li>
-							<li><?=$calendar['name']?>: <?=utf8_encode($sticky_event[$calendar['name_db']])?></li>
-							<li><?=$calendar['details']?>: </li><li><?=utf8_encode($sticky_event[$calendar['details_db']])?></li>
+							<li><h4><?=substr($sticky_event['start'],0,5)?>-<?=substr($sticky_event['end'],0,5).' '.utf8_encode($sticky_event[$calendar['name_db']])?>
+							<?php 
+							if ( isset($_SESSION['phpcal_rights']) && in_array('admin', $_SESSION['phpcal_rights']) ) {?>
+								( <a href="event_formular.php?id=<?=$sticky_event['id']?>" target="_blank"><?=$calendar['edit_event']?></a>
+								 | 
+								<a href="delete_event.php?id=<?=$sticky_event['id']?>"><?=$calendar['delete_event']?></a> )
+							<?php } ?>
+							</h4></li>
+							<li><?=utf8_encode($sticky_event[$calendar['details_db']])?></li>
 							<li><?=$calendar['participants']?>: <?=$sticky_event[$calendar['participants_db']]?></li>
 							<?php $today = date("Y-m-d H:i", time());
-							$event_date = $sticky_event['date']?> <?=substr($sticky_event['start'],0,5); ?>
+							$event_date = $sticky_event['date'].substr($sticky_event['start'],0,5); ?>
 							<li>
 							<?php if (($today < $event_date) && (!isset($_COOKIE[$sticky_event['id']])) ) { ?>
-								<form name="<?=$sticky_event['id']?>" action="<?=$_SESSION['phpcal_page']?>" method="POST" onsubmit="javascript:location.reload();">
+								<form name="<?=$sticky_event['id']?>" action="add_participant.php" method="POST">
 								<input type="hidden" name="date" value="<?=strtotime($sticky_event['date'])?>"/>
 								<button type="submit" name="<?=$sticky_event['id']?>" value="participate"><?=$calendar['participate']?></button>
 								</form>
 							<?php } elseif (isset($_COOKIE[$sticky_event['id']])) {
-								echo $calendar['participate_message'];
+								print($calendar['participate_message']);
 							} ?>
 							</li>
-							<li><?=$calendar['stickybox_message']?></li>
-							<?php 
-							if ( isset($_SESSION['phpcal_rights']) && in_array('admin', $_SESSION['phpcal_rights']) ) {?>
-								<li><a href="calendar/event_formular.php?id=<?=$sticky_event['id']?>" target="_blank"><?=$calendar['edit_event']?></a>
-								 | 
-								<a href="calendar/delete_event.php?id=<?=$sticky_event['id']?>"><?=$calendar['delete_event']?></a>
-								</li>
-							<?php } ?>
+							<li class="sticky_last"><?=$calendar['stickybox_message']?></li>
 						</ul>
 						</div>
 					<?php } ?>
@@ -124,7 +116,7 @@ if (isset($_POST['event_type'])) {
 				</div>
 				
 				<div class="stickystatus"></div>
-		<?php  } else {  echo $calendar['db_message']; } ?>
+		<?php  } else {  print($calendar['db_message']); } ?>
 	</section>
 <?php
 include("footer.php");
@@ -166,7 +158,7 @@ function drawCalendar($month, $year, $month_string) {
 
 	//this function will check user language and return the file name to be included .. 
 	$lang = check_lang();
-	include($lang); 
+	include($lang);
 	
     /*== get what weekday the first is on ==*/
     $tmpd = getdate(mktime(0,0,0,$month+1-1,1,$year+1-1));
@@ -191,8 +183,7 @@ function drawCalendar($month, $year, $month_string) {
 						echo '">&lt;&lt;</a>'; 
 					} else { echo "&nbsp;"; }?></div>
 					<div id="month">
-					<?php $cal_month = 'db_message';
-					echo $month_string." ".$_SESSION['phpcal_year']; ?>
+					<?php echo $month_string." ".$_SESSION['phpcal_year']; ?>
 					</div>
 					<div id="next_month">
 					<!-- get the next month if it's in the six months interval !-->
@@ -231,12 +222,12 @@ function drawCalendar($month, $year, $month_string) {
 						?>
 					</form>
 					<!-- choose language !-->
-					<div id="lang"><a class="lang" href="calendar/language.php?lang=de">de</a>|<a class="lang" href="calendar/language.php?lang=en">en</a></div>
+					<div id="lang"><a class="lang" href="language.php?lang=de">de</a>|<a class="lang" href="language.php?lang=en">en</a></div>
 				</td>
 			</tr>
 			<tr style="font-size:1.2em">
 				<?php for ($i = 0; $i<=6; $i++) {
-					echo '<th class="tcell" width="14.3%">'.getDay($i).'</th>';
+					echo '<th class="tcell" width="14.3%">'.$calendar['day_'.$i].'</th>';
 					}?>
 			</tr>
 		</tbody>
@@ -276,7 +267,7 @@ function drawCalendar($month, $year, $month_string) {
 				/*== make new events and participate in events ==*/
 				if ( $date >= $today && isset($_SESSION['phpcal_rights']) && (in_array('events', $_SESSION['phpcal_rights']) || in_array('admin', $_SESSION['phpcal_rights']))) {
 						/*== new events can only be created on dates in the future ==*/
-						echo ' (<a href="calendar/event_formular.php?date='.$date.'" target="_blank">'.$calendar['create_event'].'</a>)'."</br>";
+						echo ' (<a href="event_formular.php?date='.$date.'" target="_blank">'.$calendar['create_event'].'</a>)'."</br>";
 				}
 				if ( $events = get_events($date)) {
 					foreach ($events as $event) {
@@ -326,14 +317,6 @@ function isAvailableMonth($m) {
 		$availableMonths[]=$aMonth;
 	}
 	return (in_array($m, $availableMonths));
-}
-
-// new: returns the weekday
-function getDay($d) {
-	//this function will check user language and return the file name to be included .. 
-	$lang = check_lang();
-	include($lang); 
-	return $calendar['day_'.$d];
 }
 
 ?>

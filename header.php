@@ -20,7 +20,7 @@
 <meta name="DESCRIPTION" content="event calendar">
 <meta name="KEYWORDS" content="event calendar">
 <meta name="GENERATOR" content="">
-<link href="css/styles.css?template=av-067&colorScheme=green&header=headers1&button=buttons1" rel="stylesheet" type="text/css">
+<link href="css/styles.css" rel="stylesheet" type="text/css">
 <link href="css/stickytooltip.css" rel="stylesheet" type="text/css" />
 <link href="css/css-reset.css" rel="stylesheet" type="text/css" />
 </head>

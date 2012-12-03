@@ -9,7 +9,7 @@ var stickytooltip={
 	tooltipoffsets: [20, -30], //additional x and y offset from mouse cursor for tooltips
 	fadeinspeed: 200, //duration of fade effect in milliseconds
 	rightclickstick: true, //sticky tooltip when user right clicks over the triggering element (apart from pressing "s" key) ?
-	stickybordercolors: ["black", "darkred"], //border color of tooltip depending on sticky state
+	stickybordercolors: ["#000000", "#4873AE"], //border color of tooltip depending on sticky state
 	stickynotice1: ["Press \"s\"", "or right click", "to sticky box"], //customize tooltip status message
 	stickynotice2: "Click outside this box to hide it", //customize tooltip status message
 
@@ -33,13 +33,13 @@ var stickytooltip={
 	hidebox:function($, $tooltip){
 		if (!this.isdocked){
 			$tooltip.stop(false, true).hide()
-			$tooltip.css({borderColor:'black'}).find('.stickystatus:eq(0)').css({background:this.stickybordercolors[0]}).html(this.stickynotice1)
+			$tooltip.css({borderColor:this.stickybordercolors[0]}).find('.stickystatus:eq(0)').css({background:this.stickybordercolors[0]}).html(this.stickynotice1)
 		}
 	},
 
 	docktooltip:function($, $tooltip, e){
 		this.isdocked=true
-		$tooltip.css({borderColor:'darkred'}).find('.stickystatus:eq(0)').css({background:this.stickybordercolors[1]}).html(this.stickynotice2)
+		$tooltip.css({borderColor:this.stickybordercolors[1]}).find('.stickystatus:eq(0)').css({background:this.stickybordercolors[1]}).html(this.stickynotice2)
 	},
 
 

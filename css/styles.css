@@ -148,8 +148,23 @@ td.today {
 }
 ul#sticky_list {
 	list-style: none;
+	padding: 5px;
+	margin: 0;
 }
-
+ul#sticky_list li{
+	padding: 0 5px;
+}
+ul#sticky_list li a{
+	text-decoration: underline;
+}
+ul#sticky_list li a:hover{
+	color: darkred;
+}
+ul#sticky_list li.sticky_last{
+	border-top: 1px solid black;
+	margin-top: 10px;
+	padding-top: 5px;
+}
 /* sidebar */
 #login {
 	padding: 15px 0 15px 15px;

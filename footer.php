@@ -1,6 +1,6 @@
 	<aside>
 		<?php
-		include_once("calendar/user_db.php");
+		include_once("modules/user_db.php");
 		// login box for users
 		autologin();				
 		$login_failed = 0;
@@ -21,21 +21,21 @@
 			}
 			if ( !isset($_SESSION['UserID']) OR $login_failed == 1 ) {
 			// if no user is logged in or the login failed show the login form ?>
-				<form name="Login" action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" accept-charset=\"UTF-8\">
+				<form name="Login" action="<?=$_SERVER['PHP_SELF'] ?>" method="post" accept-charset=\"UTF-8\">
 				<ul id="login_form">
-					<li><?php echo $footer['login_name']; ?></li>
+					<li><?=$footer['login_name']; ?></li>
 					<li><input type="text" name="User" maxlength="32"></li>
-					<li><?php echo $footer['login_pw']; ?></li>
+					<li><?=$footer['login_pw']; ?></li>
 					<li><input type="password" name="Password"></li>
-					<li><?php echo $footer['keep_login']; ?><input type="checkbox" name="<?php echo $footer['autologin'] ?>" value="1"></li>
-					<li><input type="submit" name="submit" value="<?php echo $footer['login'] ?>"></li>
-					<li><a href="calendar/passwort.php"><?php echo $footer['forgotten_pw'] ?></a></li>
+					<li><?=$footer['keep_login']; ?><input type="checkbox" name="<?=$footer['autologin'] ?>" value="1"></li>
+					<li><input type="submit" name="submit" value="<?=$footer['login'] ?>"></li>
+					<li><a href="passwort.php"><?=$footer['forgotten_pw'] ?></a></li>
 				</ul>
 				</form>
 			<?php // if a user is logged in only show the welcome message
 			} else {
 				echo $footer['welcome'].$_SESSION['Nickname'].".";
-				echo " (<a href='calendar/logout.php'>".$footer['logout']."</a>)";
+				echo " (<a href='logout.php'>".$footer['logout']."</a>)";
 			}
 			?>
 		</div>
@@ -44,9 +44,9 @@
 			<li>
 			<?php 
 			if (isset($_GET['m'])){
-				echo '<a href="calendar/liste.php?year='.$_GET['y'].'&amp;month='.$_GET['m'].'" target="_blank">'.$footer['monthly_events'].'</a>';
+				echo '<a href="liste.php?year='.$_GET['y'].'&amp;month='.$_GET['m'].'" target="_blank">'.$footer['monthly_events'].'</a>';
 			} else {
-				echo '<a href="calendar/liste.php?year='.$_SESSION['phpcal_year'].'&amp;month='.$_SESSION['phpcal_month'].'" target="_blank">'.$footer['monthly_events'].'</a>';
+				echo '<a href="liste.php?year='.$_SESSION['phpcal_year'].'&amp;month='.$_SESSION['phpcal_month'].'" target="_blank">'.$footer['monthly_events'].'</a>';
 			};
 			?>
 			</li>

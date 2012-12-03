@@ -1,6 +1,6 @@
 <?php 
 // included files
-include_once("calendar/user_db.php");
+include_once("modules/user_db.php");
 include("header.php");
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -36,12 +36,12 @@ include_once($lang);
 			echo "<tr>";
 			echo "<td>".$user['username']."</td>";
 			echo "<td>".$user['mail']."</td>";
-			echo "<td><a href='calendar/edit_user.php?id=".$user['id']."'>".$user_config['edit']."</a></td>";
+			echo "<td><a href='edit_user.php?id=".$user['id']."'>".$user_config['edit']."</a></td>";
 			// it's not possible to delete the admin
 			if($user['username'] == "phpadmin") {
 				echo "<td>&nbsp;</td>"; 
 			} else {
-				echo "<td><a href='calendar/delete_user.php?id=".$user['id']."'>".$user_config['delete']."</a></td>"; 
+				echo "<td><a href='delete_user.php?id=".$user['id']."'>".$user_config['delete']."</a></td>"; 
 			} 
 			echo "</tr>";
 		} 
@@ -51,16 +51,17 @@ include_once($lang);
 </section>
 <div id="overlay">
 	<div class="user_overlay">
-		<form id="user_formular" name="user_formular" action="" method="POST">
+		<!-- <form id="user_formular" name="user_formular" action="" method="POST">!-->
+		<form id="user_formular" name="user_formular" action="save_user.php" method="POST">
 			<ul>
 			<li><b><?php echo $user_config['add_user']?></b></li>
-			<li><label for="user_name" id="em"><?php echo $footer['login_name']; ?>:<strong>*</strong></label></li>
+			<li><label for="user_name" id="em"><?=$footer['login_name']; ?>:<strong>*</strong></label></li>
 			<li><input type="text" name="user_name" size="35" maxlength="128" value=""><span class="error"></span></li>
-			<li><label for="user_password" id="em"><?php echo $footer['login_pw']; ?>:<strong>*</strong></label></li>
+			<li><label for="user_password" id="em"><?=$footer['login_pw']; ?>:<strong>*</strong></label></li>
 			<li><input type="password" name="user_password" size="35" maxlength="128" value=""/><span class="error"></span></li>
-			<li><label for="user_mail" id="em"><?php echo $user_config['mail']; ?>:</label></li>
+			<li><label for="user_mail" id="em"><?=$user_config['mail']; ?>:</label></li>
 			<li><input type="text" id="user_mail" name="user_mail" size="35" maxlength="128" value=""/><span class="error"></span></li>
-			<li><input type="submit" class="submit" value="<?php echo $main['submit']; ?>"> <a href="#" id="close"><?php echo $user_config['close'] ?></a></li>
+			<li><input type="submit" class="submit" value="<?=$main['submit']; ?>"> <a href="#" id="close"><?=$user_config['close'] ?></a></li>
 			</ul>
 		</form>
 	</div>
