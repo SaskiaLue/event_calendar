@@ -3,6 +3,7 @@
 $main['calendar']='Kalender';
 $main['return_message'] = 'Zur&uuml;ck zum Kalender.';
 $main['submit'] = 'Absenden';
+$main['date_error'] = 'Fehler: Sie haben keine validen Werte angegeben.';
 
 // footer.php
 $footer['welcome']='Willkommen ';
@@ -73,4 +74,8 @@ $month_list['time'] = 'Zeit';
 
 // event_config.php
 $event_config['wrong_date'] = 'Sie k&ouml;nnen nur Events in der Zukunft erstellen!';
+
+// error.php
+$error_page['message'] = 'Seite nicht gefunden!';
+
 ?>

@@ -44,7 +44,23 @@ function check_lang() {
 }
 //this function will check user language and return the file name to be included .. 
 $lang = check_lang();
-include($lang); ?>
+include($lang); 
+
+// new: checks if the month is available
+function isAvailableMonth($m,$y) {
+	$available = FALSE;
+	$month = date("n",time());
+	$year = date("Y",time());
+	for ($i=-1;$i<=4;$i++) {
+		$aMonth=$month+$i;
+		$aYear=$year;
+		if ($aMonth > 12) { $aMonth = $aMonth - 12 ; $aYear = $year + 1;}
+		if ($aMonth < 1) { $aMonth = $aMonth + 12 ; $aYear = $year - 1;}
+		if ( ( $m == $aMonth ) && ( $y == $aYear ) ) { $available = TRUE; }
+	}
+	return $available;
+}
+?>
 <?php // important to keep the footer on the bottom of the page ?>
 <div class="wrapper">
 	<header>

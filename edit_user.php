@@ -11,7 +11,7 @@ session_start();
 error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', 'On');
 
-if (isset($_GET['id'])) $userid=$_GET['id'];
+if (isset($_GET['id'])) $userid=(int)$_GET['id'];
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	// get values

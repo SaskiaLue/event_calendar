@@ -23,12 +23,14 @@ include("header.php");
 //******************************************************************
 
 // set the displayed month and year
-if (isset($_GET['m'])){
-	$_SESSION['phpcal_month'] = $_GET['m'];
-	$_SESSION['phpcal_year'] = $_GET['y'];
+if (isset($_GET['m']) && isset($_GET['y']) && isAvailableMonth((int)$_GET['m'],(int)$_GET['y'])){
+	$_SESSION['phpcal_month'] = (int)$_GET['m'];
+	$_SESSION['phpcal_year']  = (int)$_GET['y'];
 } else {
-	if (empty($_SESSION['phpcal_month'])) { $_SESSION['phpcal_month'] =  date("n",time()); };
-	if (empty($_SESSION['phpcal_year'])) { $_SESSION['phpcal_year']  =  date("Y",time()); };
+	// if ( ( empty($_SESSION['phpcal_month']) ) || ( empty($_SESSION['phpcal_year'] ) ) || !isAvailableMonth($_GET['m'],$_GET['y']) || !isAvailableMonth($_SESSION['phpcal_month'],$_SESSION['phpcal_year']) ) { 
+		$_SESSION['phpcal_month']  =  date("n",time()); 
+		$_SESSION['phpcal_year']   =  date("Y",time()); 
+	// }
 }
 
 // set the current month and year
@@ -174,13 +176,10 @@ function drawCalendar($month, $year, $month_string) {
 				<td colspan="7" class="months">
 					<div id="last_month">
 					<!-- get the previous month if it's in the six months interval !-->
-					<?php $newMonth = (($_SESSION['phpcal_month']-1)<1) ? $_SESSION['phpcal_month']+11 : $_SESSION['phpcal_month']-1; 
-					if (isAvailableMonth($newMonth)){
-						echo '<a href="'.$_SERVER['PHP_SELF']."?m=".$newMonth."&y="; 
-						if(($_SESSION['phpcal_month']-1)<1) {
-							echo $_SESSION['phpcal_year']-1;
-						} else echo $_SESSION['phpcal_year'];
-						echo '">&lt;&lt;</a>'; 
+					<?php $newMonth = (($_SESSION['phpcal_month']-1)<1) ? (int)$_SESSION['phpcal_month']+11 : $_SESSION['phpcal_month']-1;
+						  $newYear	= (($_SESSION['phpcal_month']-1)<1) ? (int)$_SESSION['phpcal_year']-1 : $_SESSION['phpcal_year'];
+					if (isAvailableMonth($newMonth, $newYear)){
+						echo '<a href="'.$_SERVER['PHP_SELF']."?m=".$newMonth."&y=".$newYear.'">&lt;&lt;</a>'; 
 					} else { echo "&nbsp;"; }?></div>
 					<div id="month">
 					<?php echo $month_string." ".$_SESSION['phpcal_year']; ?>
@@ -188,12 +187,9 @@ function drawCalendar($month, $year, $month_string) {
 					<div id="next_month">
 					<!-- get the next month if it's in the six months interval !-->
 					<?php $newMonth = (($_SESSION['phpcal_month']+1)>12) ? $_SESSION['phpcal_month']-11 : $_SESSION['phpcal_month']+1;
-					if (isAvailableMonth($newMonth)){
-						echo '<a href="'.$_SERVER['PHP_SELF']."?m=".$newMonth."&y=";
-						if(($_SESSION['phpcal_month']+1)>12){
-							echo $_SESSION['phpcal_year']+1; 
-						} else echo $_SESSION['phpcal_year'];
-						echo '">&gt;&gt;</a>'; 
+						  $newYear	= (($_SESSION['phpcal_month']+1)>12) ? $_SESSION['phpcal_year']+1 : $_SESSION['phpcal_year'];
+					if (isAvailableMonth($newMonth, $newYear)){
+						echo '<a href="'.$_SERVER['PHP_SELF']."?m=".$newMonth."&y=".$newYear.'">&gt;&gt;</a>'; 
 					} else { echo "&nbsp;"; }?></div>
 				</td>
 			</tr>
@@ -305,18 +301,5 @@ function drawCalendar($month, $year, $month_string) {
 <?php
 /*== end drawCalendar function ==*/
 } 
-
-// new: checks if the month is available
-function isAvailableMonth($m) {
-	$month = date("n",time());
-	$availableMonths = array();
-	for ($i=-1;$i<=4;$i++) {
-		$aMonth=$month+$i;
-		if ($aMonth > 12) { $aMonth = $aMonth-12 ;}
-		if ($aMonth < 1) { $aMonth = $aMonth+12 ;}
-		$availableMonths[]=$aMonth;
-	}
-	return (in_array($m, $availableMonths));
-}
 
 ?>

@@ -22,12 +22,14 @@ function can_connect() {
 	global $pass;
 	global $db_name;
 	try {
-	   $dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
-	   return true;
-	   $dbh = null;
+		$dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
+		$dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		return true;
+		$dbh = null;
 	} catch (PDOException $e) {
-	   print "Error!: " . $e->getMessage() . "<br/>";
-	   die();
+		print "Error!: " . $e->getMessage() . "<br/>";
+		die();
 	}
 }
 
@@ -40,6 +42,8 @@ function enterQuery($query) {
 	global $db_name;
 	try {
 		$dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
+		$dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$dbh->query($query);
 		$dbh = null;
 	} catch (PDOException $e) {
@@ -57,6 +61,8 @@ function returnQuery($query) {
 	$value = array();
 	try {
 		$dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
+		$dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		foreach ($dbh->query($query) as $row) {
 			$value[] = $row;
 		}
@@ -78,6 +84,8 @@ function getDropdownOptions($name, $table, $selected) {
 	global $db_name;
 	try {
 		$dbh = new PDO('mysql:host='.$host.';dbname='.$db_name, $username, $pass);
+		$dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		foreach ($dbh->query("SELECT id, ".$name." FROM ".$table) as $row) {
 			$html .= sprintf("<option value='%s'%s>%s</option>\n", $row["id"], $row["id"] == $selected ? ' selected' : '', $row[$name]);
 		}

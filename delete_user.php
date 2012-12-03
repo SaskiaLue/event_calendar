@@ -6,7 +6,7 @@ include("modules/user_db.php");
 session_start();
 
 //deleting the indicated user
-delete_user($_GET['id']);
+delete_user((int)$_GET['id']);
 
 //back to user management
 header('Location:  user_config.php');
