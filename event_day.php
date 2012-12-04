@@ -9,7 +9,7 @@
 		// included files
 		include_once("modules/event_db.php");
 		// check for valid date
-		$pattern = "/\d\d[-]\d\d[-]\d\d\d\d/";
+		$pattern = "/\d{4}-\d{2}-\d{2}/";
 		if (isset($_GET['date']) && preg_match($pattern, $_GET['date'])) {
 			$date_array = explode('-',$_GET['date']);
 			$day = $date_array[2];

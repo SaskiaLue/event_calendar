@@ -69,9 +69,10 @@ function get_repeat($repeat_id) {
 *************************** change and add events ***************************************
 ****************************************************************************************/
 // try to insert the given event values
-function insert_event($values) {
+function insert_event($values, $repeatable_event_id = 0) {
 	$query = "insert into `events`
 				(`event_type_id`,
+				`repeatable_event_id`,
 				`date`,
 				`title`,
 				`details`,
@@ -83,6 +84,7 @@ function insert_event($values) {
 				`details_english`)
 			values
 				( '".$values['event_type']."',
+				'".$repeatable_event_id."',
 				'".$values['event_date']."',
 				'".$values['event']."',
 				'".$values['event_details']."',
@@ -96,6 +98,7 @@ function insert_event($values) {
 	enterQuery($query);
 	// if it's a repeatable event create all future events
 	if ($values['event_repeated'] != "0") {
+		$repeatable_event_id = mysql_insert_id();
 		$date = $values['event_date'];
 		$month = date("n",time());
 		$year = date("Y",time());
@@ -105,7 +108,7 @@ function insert_event($values) {
         	$save_event=$values;
 			$save_event['event_date'] = $date;  
 			$save_event['event_repeated'] = 0; 
-			insert_event($save_event);
+			insert_event($save_event, $repeatable_event_id);
 			
 			// calculate new event date
 			$date = getNextDate($date, $values['event_repeated']);
@@ -228,7 +231,7 @@ function delete_event($event_id) {
 }
 
 // helper functions
-function getNextDate($date, $repeat_type, $after = false) {
+function getNextDate($date, $repeat_type, $start = false) {
 	// calculate new event date
 	switch ($repeat_type) {
 		case 1:
@@ -241,8 +244,29 @@ function getNextDate($date, $repeat_type, $after = false) {
 			$return_date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($date))+1  , date("d",strtotime($date)), date("Y",strtotime($date))));
 			break;
 	}
-	if ( $after && ($after > $return_date )) {
-		return getNextDate($return_date, $repeat_type, $after);
+	// if the date has to start on or after a specific date:
+	if ( $start ) {
+		switch ($repeat_type) {
+			case 1:
+				// if it's a daily event it can start on the specified date
+				$return_date = $start;
+				break;
+			case 2:
+				// for weekly events:
+				// get the weekday of the event start date and the weekday of the original event day
+				$eventWday = date("N",strtotime($date));
+				$afterWday = date("N",strtotime($start));
+				// get the difference and add 7 days if it's negative
+				$addDays = $eventWday - $afterWday;
+				$addDays = $addDays + (( $addDays < 0 ) ? ( 7 ) : ( 0 ));
+				// add the number of days to get to the wanted weekday
+				$return_date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($start))  , date("d",strtotime($start))+$addDays, date("Y",strtotime($start))));
+				break;
+			case 3:
+				// if it's a monthly date just add the month and year of the specific start date
+				$return_date = date("Y-m-d", mktime(0, 0, 0, date("m",strtotime($start))  , date("d",strtotime($date)), date("Y",strtotime($start))));
+				break;
+		}
 	}
 	return $return_date;
 }
